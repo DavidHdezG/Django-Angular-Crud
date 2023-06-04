@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-d7@z#ay!@4ta044k@okzc@#fn2%*e=o@2wii8fm990unmt&#x4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '']
 
 
 # Application definition
@@ -37,11 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
     'corsheaders',
+    'rest_framework',
+    'coreapi',
     'restapi',
 ]
-
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+}
 CORS_ORIGIN_ALLOW_ALL = True
 
 MIDDLEWARE = [
