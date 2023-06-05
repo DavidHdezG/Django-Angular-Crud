@@ -8,7 +8,7 @@ from django.http.response import JsonResponse
 from django.core.files.storage import default_storage
 from restapi.models import Department, Employee
 from restapi.serializers import DepartmentSerializer, EmployeeSerializer
-
+from rest_framework import generics
 @csrf_exempt
 def departmentApi(request, id=0):
     if request.method=='GET':
@@ -35,6 +35,44 @@ def departmentApi(request, id=0):
         department = Department.objects.get(DepartmentId=id)
         department.delete()
         return JsonResponse("Deleted Succeffully", safe=False)
+
+
+class DepartmentList(generics.GenericAPIView):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+    
+
+    def post(self, request):
+        departments_data = JSONParser().parse(request)
+        departments_serializer = DepartmentSerializer(data=departments_data)
+        if departments_serializer.is_valid():
+            departments_serializer.save()
+            return JsonResponse("Added Successfully", safe=False)
+        
+        return JsonResponse("Failed to Add.", safe=False)
+    
+    def put(self, request):
+        departments_data = JSONParser().parse(request)
+        department = Department.objects.get(DepartmentId=departments_data['DepartmentId'])
+        departments_serializer = DepartmentSerializer(department,data=departments_data)
+        if departments_serializer.is_valid():
+            departments_serializer.save()
+            return JsonResponse("Updated Successfully", safe=False)
+        return JsonResponse("Failed to Update.", safe=False)
+    
+    def delete(self, request, id):
+        department = Department.objects.get(DepartmentId=id)
+        department.delete()
+        return JsonResponse("Deleted Succeffully", safe=False)
+        
+    
+    
+    
+class EmployeeList(generics.GenericAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+
+
 
 @csrf_exempt
 def employeeApi(request, id=0):
